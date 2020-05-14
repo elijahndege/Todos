@@ -62,7 +62,7 @@ class TodosController extends Controller
         $validated = $request->validated();
         $todo = Todo::findOrFail($id);
         $todo->task = $validated['task'];
-        $todo->description = $validated['description'];
+        $todo->is_completed = $validated['is_completed'];
         $todo->save();
 
         if (!$todo) {

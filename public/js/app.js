@@ -1992,6 +1992,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     this.fetchTodos();
@@ -1999,6 +2003,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       isLoading: true,
+      isEditing: false,
       newTask: "",
       tasks: [],
       validation: []
@@ -2040,36 +2045,44 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee, null, [[0, 7]]);
       }))();
     },
-    // showEditForm(task) {
-    //   this.newTask.edit = true;
-    //   console.log(this.newTask.task);
-    // },
-    addTask: function addTask() {
+    updateTask: function updateTask(task) {
       var _this2 = this;
+
+      console.log(task);
+      task.is_completed = !task.is_completed;
+      var uri = "/api/todos/update/".concat(task.id);
+      this.axios.patch(uri, {
+        task: task.task,
+        is_completed: task.is_completed
+      }).then(function (response) {
+        _this2.tasks.splice(task.index, 1, response.data.data);
+      });
+    },
+    addTask: function addTask() {
+      var _this3 = this;
 
       if (this.newTask.length > 0) {
         var task = {
           task: this.newTask,
-          is_completed: true
+          is_completed: false
         };
         var uri = "https://crud.test/api/todos/store";
         this.axios.post(uri, task).then(function (response) {
-          _this2.tasks.push(response.data.data);
+          _this3.tasks.push(response.data.data);
 
-          _this2.newTask = "";
+          _this3.newTask = "";
         })["catch"](function (error) {
-          _this2.validation = error.response.data.data;
+          _this3.validation = error.response.data.data;
         });
       }
     },
-    destroy: function destroy(id) {
-      var _this3 = this;
+    destroy: function destroy(task) {
+      var _this4 = this;
 
-      var uri = "https://crud.test/api/todos/".concat(id);
+      var uri = "https://crud.test/api/todos/".concat(task.id);
       this.axios["delete"](uri).then(function (response) {
-        _this3.tasks = _this3.tasks.filter(function (task) {
-          return task.id !== id;
-        });
+        _this4.tasks.splice(task.index, 1); // this.tasks = this.tasks.filter(task => task.id !== id);
+
       })["catch"](function (error) {
         alert("system error!");
       });
@@ -3415,13 +3428,18 @@ var render = function() {
                     _c(
                       "ul",
                       { staticClass: "d-flex flex-column-reverse todo-list" },
-                      _vm._l(_vm.tasks, function(task) {
-                        return _c("li", { key: task.id }, [
+                      _vm._l(_vm.tasks, function(task, index) {
+                        return _c("li", { key: index }, [
                           _c(
                             "div",
                             {
                               staticClass: "form-check",
-                              class: { completed: task.is_completed }
+                              class: { completed: task.is_completed },
+                              on: {
+                                click: function($event) {
+                                  return _vm.updateTask(task)
+                                }
+                              }
                             },
                             [
                               _c("label", { staticClass: "form-check-label" }, [
@@ -3487,7 +3505,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                return _vm.destroy(task.id)
+                                return _vm.destroy(task)
                               }
                             }
                           })

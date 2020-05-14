@@ -24,15 +24,19 @@
               </div>
               <div class="list-wrapper">
                 <ul class="d-flex flex-column-reverse todo-list">
-                  <li v-for="task in tasks" :key="task.id">
-                    <div class="form-check" :class="{completed: task.is_completed}">
+                  <li v-for="(task, index) in tasks" :key="index">
+                    <div
+                      class="form-check"
+                      @click="updateTask(task)"
+                      :class="{completed: task.is_completed}"
+                    >
                       <label class="form-check-label">
-                        <input class="checkbox" type="checkbox" v-model="task.is_completed"/>
+                        <input class="checkbox" type="checkbox" v-model="task.is_completed" />
                         {{task.task}}
                         <i class="input-helper"></i>
                       </label>
                     </div>
-                    <i @click.prevent="destroy(task.id)" class="remove fa fa-trash"></i>
+                    <i @click.prevent="destroy(task)" class="remove fa fa-trash"></i>
                   </li>
                 </ul>
               </div>
@@ -53,6 +57,7 @@ export default {
   data() {
     return {
       isLoading: true,
+      isEditing: false,
       newTask: "",
       tasks: [],
       validation: []
@@ -71,16 +76,22 @@ export default {
       }
       this.isLoading = false;
     },
-    // showEditForm(task) {
-    //   this.newTask.edit = true;
-    //   console.log(this.newTask.task);
-    // },
+    updateTask(task) {
+      console.log(task);
+      task.is_completed = !task.is_completed;
+      let uri = `/api/todos/update/${task.id}`;
 
+      this.axios
+        .patch(uri, { task: task.task, is_completed: task.is_completed })
+        .then(response => {
+          this.tasks.splice(task.index, 1, response.data.data);
+        });
+    },
     addTask() {
       if (this.newTask.length > 0) {
         let task = {
           task: this.newTask,
-          is_completed: true
+          is_completed: false
         };
         let uri = "https://crud.test/api/todos/store";
         this.axios
@@ -94,12 +105,13 @@ export default {
           });
       }
     },
-    destroy(id) {
-      let uri = `https://crud.test/api/todos/${id}`;
+    destroy(task) {
+      let uri = `https://crud.test/api/todos/${task.id}`;
       this.axios
         .delete(uri)
         .then(response => {
-          this.tasks = this.tasks.filter(task => task.id !== id);
+          this.tasks.splice(task.index, 1);
+          // this.tasks = this.tasks.filter(task => task.id !== id);
         })
         .catch(error => {
           alert("system error!");
