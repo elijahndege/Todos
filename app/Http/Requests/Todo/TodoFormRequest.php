@@ -25,7 +25,8 @@ class TodoFormRequest extends FormRequest
     {
         $rules = [
             'task' => 'required',
-            'description' => 'nullable'
+            'description' => 'nullable',
+            'is_completed' => 'required|boolean',
         ];
 
 
