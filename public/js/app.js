@@ -1,50 +1,6 @@
 /******/ (function(modules) { // webpackBootstrap
-/******/ 	// install a JSONP callback for chunk loading
-/******/ 	function webpackJsonpCallback(data) {
-/******/ 		var chunkIds = data[0];
-/******/ 		var moreModules = data[1];
-/******/
-/******/
-/******/ 		// add "moreModules" to the modules object,
-/******/ 		// then flag all "chunkIds" as loaded and fire callback
-/******/ 		var moduleId, chunkId, i = 0, resolves = [];
-/******/ 		for(;i < chunkIds.length; i++) {
-/******/ 			chunkId = chunkIds[i];
-/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 				resolves.push(installedChunks[chunkId][0]);
-/******/ 			}
-/******/ 			installedChunks[chunkId] = 0;
-/******/ 		}
-/******/ 		for(moduleId in moreModules) {
-/******/ 			if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
-/******/ 				modules[moduleId] = moreModules[moduleId];
-/******/ 			}
-/******/ 		}
-/******/ 		if(parentJsonpFunction) parentJsonpFunction(data);
-/******/
-/******/ 		while(resolves.length) {
-/******/ 			resolves.shift()();
-/******/ 		}
-/******/
-/******/ 	};
-/******/
-/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-/******/
-/******/ 	// object to store loaded and loading chunks
-/******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 	// Promise = chunk loading, 0 = chunk loaded
-/******/ 	var installedChunks = {
-/******/ 		"/js/app": 0
-/******/ 	};
-/******/
-/******/
-/******/
-/******/ 	// script path function
-/******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"js/todos/create":"js/todos/create","js/todos/update":"js/todos/update"}[chunkId]||chunkId) + ".js?id=" + {"js/todos/create":"c27feca3be6668ee7351","js/todos/update":"82f877442e6425a5c6bf"}[chunkId] + ""
-/******/ 	}
 /******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -70,67 +26,6 @@
 /******/ 		return module.exports;
 /******/ 	}
 /******/
-/******/ 	// This file contains only the entry chunk.
-/******/ 	// The chunk loading function for additional chunks
-/******/ 	__webpack_require__.e = function requireEnsure(chunkId) {
-/******/ 		var promises = [];
-/******/
-/******/
-/******/ 		// JSONP chunk loading for javascript
-/******/
-/******/ 		var installedChunkData = installedChunks[chunkId];
-/******/ 		if(installedChunkData !== 0) { // 0 means "already installed".
-/******/
-/******/ 			// a Promise means "currently loading".
-/******/ 			if(installedChunkData) {
-/******/ 				promises.push(installedChunkData[2]);
-/******/ 			} else {
-/******/ 				// setup Promise in chunk cache
-/******/ 				var promise = new Promise(function(resolve, reject) {
-/******/ 					installedChunkData = installedChunks[chunkId] = [resolve, reject];
-/******/ 				});
-/******/ 				promises.push(installedChunkData[2] = promise);
-/******/
-/******/ 				// start chunk loading
-/******/ 				var script = document.createElement('script');
-/******/ 				var onScriptComplete;
-/******/
-/******/ 				script.charset = 'utf-8';
-/******/ 				script.timeout = 120;
-/******/ 				if (__webpack_require__.nc) {
-/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
-/******/ 				}
-/******/ 				script.src = jsonpScriptSrc(chunkId);
-/******/
-/******/ 				// create error before stack unwound to get useful stacktrace later
-/******/ 				var error = new Error();
-/******/ 				onScriptComplete = function (event) {
-/******/ 					// avoid mem leaks in IE.
-/******/ 					script.onerror = script.onload = null;
-/******/ 					clearTimeout(timeout);
-/******/ 					var chunk = installedChunks[chunkId];
-/******/ 					if(chunk !== 0) {
-/******/ 						if(chunk) {
-/******/ 							var errorType = event && (event.type === 'load' ? 'missing' : event.type);
-/******/ 							var realSrc = event && event.target && event.target.src;
-/******/ 							error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
-/******/ 							error.name = 'ChunkLoadError';
-/******/ 							error.type = errorType;
-/******/ 							error.request = realSrc;
-/******/ 							chunk[1](error);
-/******/ 						}
-/******/ 						installedChunks[chunkId] = undefined;
-/******/ 					}
-/******/ 				};
-/******/ 				var timeout = setTimeout(function(){
-/******/ 					onScriptComplete({ type: 'timeout', target: script });
-/******/ 				}, 120000);
-/******/ 				script.onerror = script.onload = onScriptComplete;
-/******/ 				document.head.appendChild(script);
-/******/ 			}
-/******/ 		}
-/******/ 		return Promise.all(promises);
-/******/ 	};
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
@@ -183,16 +78,6 @@
 /******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/";
-/******/
-/******/ 	// on error function for async loading
-/******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
-/******/
-/******/ 	var jsonpArray = window["webpackJsonp"] = window["webpackJsonp"] || [];
-/******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
-/******/ 	jsonpArray.push = webpackJsonpCallback;
-/******/ 	jsonpArray = jsonpArray.slice();
-/******/ 	for(var i = 0; i < jsonpArray.length; i++) webpackJsonpCallback(jsonpArray[i]);
-/******/ 	var parentJsonpFunction = oldJsonpFunction;
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -2107,75 +1992,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     this.fetchTodos();
@@ -2183,11 +1999,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       isLoading: true,
-      newTask: {
-        task: '',
-        description: '',
-        edit: false
-      },
+      newTask: "",
       tasks: [],
       validation: []
     };
@@ -2228,19 +2040,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee, null, [[0, 7]]);
       }))();
     },
-    showEditForm: function showEditForm(task) {
-      this.newTask.edit = true;
-      console.log(this.newTask.task);
-    },
-    taskStore: function taskStore() {
+    // showEditForm(task) {
+    //   this.newTask.edit = true;
+    //   console.log(this.newTask.task);
+    // },
+    addTask: function addTask() {
       var _this2 = this;
 
-      var uri = "https://crud.test/api/todos/store";
-      this.axios.post(uri, this.newTask).then(function (response) {
-        _this2.tasks.push(response.data.data);
-      })["catch"](function (error) {
-        _this2.validation = error.response.data.data;
-      });
+      if (this.newTask.length > 0) {
+        var task = {
+          task: this.newTask,
+          is_completed: true
+        };
+        var uri = "https://crud.test/api/todos/store";
+        this.axios.post(uri, task).then(function (response) {
+          _this2.tasks.push(response.data.data);
+
+          _this2.newTask = "";
+        })["catch"](function (error) {
+          _this2.validation = error.response.data.data;
+        });
+      }
     },
     destroy: function destroy(id) {
       var _this3 = this;
@@ -3519,332 +3339,173 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-6" }, [
-        !_vm.newTask.edit
-          ? _c("div", { staticClass: "card border-secondary" }, [
-              _c("div", { staticClass: "card-header" }, [_vm._v("Add Task")]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-body text-secondary" }, [
-                _c(
-                  "form",
-                  {
-                    on: {
-                      submit: function($event) {
-                        $event.preventDefault()
-                        return _vm.taskStore($event)
-                      }
-                    }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Task")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.newTask.task,
-                            expression: "newTask.task"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: { type: "text", placeholder: "Add Task" },
-                        domProps: { value: _vm.newTask.task },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(_vm.newTask, "task", $event.target.value)
-                          }
+  return _c(
+    "div",
+    {
+      staticClass: "page-content page-container",
+      attrs: { id: "page-content" }
+    },
+    [
+      _c("div", { staticClass: "padding" }, [
+        _c(
+          "div",
+          { staticClass: "row container d-flex justify-content-center" },
+          [
+            _c("div", { staticClass: "col-lg-12" }, [
+              _c("div", { staticClass: "card px-3" }, [
+                _c("div", { staticClass: "card-body" }, [
+                  _c("h4", { staticClass: "card-title" }, [
+                    _vm._v("Todo list")
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "add-items d-flex" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.newTask,
+                          expression: "newTask"
                         }
-                      }),
-                      _vm._v(" "),
-                      _vm.validation.task
-                        ? _c("div", [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "alert alert-danger mt-1",
-                                attrs: { role: "alert" }
-                              },
-                              [_vm._v(_vm._s(_vm.validation.task[0]))]
+                      ],
+                      staticClass: "form-control todo-list-input",
+                      attrs: {
+                        type: "text",
+                        placeholder: "What do you need to do today?"
+                      },
+                      domProps: { value: _vm.newTask },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !$event.type.indexOf("key") &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
                             )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Description")]),
-                      _vm._v(" "),
-                      _c("textarea", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.newTask.description,
-                            expression: "newTask.description"
+                          ) {
+                            return null
                           }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          rows: "5",
-                          placeholder: "Add task description"
+                          return _vm.addTask($event)
                         },
-                        domProps: { value: _vm.newTask.description },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(
-                              _vm.newTask,
-                              "description",
-                              $event.target.value
-                            )
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
                           }
+                          _vm.newTask = $event.target.value
                         }
-                      }),
-                      _vm._v(" "),
-                      _vm.validation.description
-                        ? _c("div", [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "alert alert-danger mt-1",
-                                attrs: { role: "alert" }
-                              },
-                              [_vm._v(_vm._s(_vm.validation.description[0]))]
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(0)
-                  ]
-                )
-              ])
-            ])
-          : _c("div", { staticClass: "card border-secondary" }, [
-              _c("div", { staticClass: "card-header" }, [_vm._v("Edit Task")]),
-              _vm._v(" "),
-              _c("div", { staticClass: "card-body text-secondary" }, [
-                _c(
-                  "form",
-                  {
-                    on: {
-                      submit: function($event) {
-                        $event.preventDefault()
-                        return _vm.UpdateStore($event)
                       }
-                    }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Task")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.newTask.task,
-                            expression: "newTask.task"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: { type: "text", placeholder: "Add Task" },
-                        domProps: { value: _vm.newTask.task },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(_vm.newTask, "task", $event.target.value)
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _vm.validation.task
-                        ? _c("div", [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "alert alert-danger mt-1",
-                                attrs: { role: "alert" }
-                              },
-                              [_vm._v(_vm._s(_vm.validation.task[0]))]
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
+                    }),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Description")]),
-                      _vm._v(" "),
-                      _c("textarea", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.newTask.description,
-                            expression: "newTask.description"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: {
-                          rows: "5",
-                          placeholder: "Add task description"
-                        },
-                        domProps: { value: _vm.newTask.description },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(
-                              _vm.newTask,
-                              "description",
-                              $event.target.value
-                            )
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _vm.validation.description
-                        ? _c("div", [
-                            _c(
-                              "div",
-                              {
-                                staticClass: "alert alert-danger mt-1",
-                                attrs: { role: "alert" }
-                              },
-                              [_vm._v(_vm._s(_vm.validation.description[0]))]
-                            )
-                          ])
-                        : _vm._e()
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(1)
-                  ]
-                )
-              ])
-            ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-6" }, [
-        _c("div", { staticClass: "card card-success" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v("Todos")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "table-responsive mt-2" }, [
-              _c("table", { staticClass: "table table-hover table-bordered" }, [
-                _vm._m(2),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.tasks, function(task) {
-                    return _c("tr", { key: task.id }, [
-                      _c("td", [_vm._v(_vm._s(task.task))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(task.description))]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "text-center" }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-sm btn-primary",
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.showEditForm(task)
-                              }
-                            }
-                          },
-                          [_vm._v("Edit")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-sm btn-danger",
+                    _c(
+                      "button",
+                      {
+                        staticClass:
+                          "add btn btn-primary font-weight-bold todo-list-add-btn",
+                        attrs: { disabled: _vm.newTask.length === 0 },
+                        on: { click: _vm.addTask }
+                      },
+                      [_vm._v("Add")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "list-wrapper" }, [
+                    _c(
+                      "ul",
+                      { staticClass: "d-flex flex-column-reverse todo-list" },
+                      _vm._l(_vm.tasks, function(task) {
+                        return _c("li", { key: task.id }, [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "form-check",
+                              class: { completed: task.is_completed }
+                            },
+                            [
+                              _c("label", { staticClass: "form-check-label" }, [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: task.is_completed,
+                                      expression: "task.is_completed"
+                                    }
+                                  ],
+                                  staticClass: "checkbox",
+                                  attrs: { type: "checkbox" },
+                                  domProps: {
+                                    checked: Array.isArray(task.is_completed)
+                                      ? _vm._i(task.is_completed, null) > -1
+                                      : task.is_completed
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$a = task.is_completed,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = null,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            _vm.$set(
+                                              task,
+                                              "is_completed",
+                                              $$a.concat([$$v])
+                                            )
+                                        } else {
+                                          $$i > -1 &&
+                                            _vm.$set(
+                                              task,
+                                              "is_completed",
+                                              $$a
+                                                .slice(0, $$i)
+                                                .concat($$a.slice($$i + 1))
+                                            )
+                                        }
+                                      } else {
+                                        _vm.$set(task, "is_completed", $$c)
+                                      }
+                                    }
+                                  }
+                                }),
+                                _vm._v(
+                                  "\n                      " +
+                                    _vm._s(task.task) +
+                                    "\n                      "
+                                ),
+                                _c("i", { staticClass: "input-helper" })
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("i", {
+                            staticClass: "remove fa fa-trash",
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
                                 return _vm.destroy(task.id)
                               }
                             }
-                          },
-                          [_vm._v("Delete")]
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                )
+                          })
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
               ])
             ])
-          ])
-        ])
+          ]
+        )
       ])
-    ])
-  ])
+    ]
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-md btn-success", attrs: { type: "submit" } },
-        [_vm._v("Submit")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-md btn-danger", attrs: { type: "reset" } },
-        [_vm._v("Reset")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-md btn-success", attrs: { type: "submit" } },
-        [_vm._v("Submit")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-md btn-danger", attrs: { type: "reset" } },
-        [_vm._v("Reset")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Task")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Description")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Action")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -19022,8 +18683,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.Vue = vue__WEBPACK_IMPORTED_MODULE_0___default.a;
+window.axios = axios__WEBPACK_IMPORTED_MODULE_3___default.a;
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_axios__WEBPACK_IMPORTED_MODULE_2___default.a, axios__WEBPACK_IMPORTED_MODULE_3___default.a);
+var token = document.head.querySelector('meta[name="csrf-token"]');
+
+if (token) {
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+} else {
+  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+}
 
 /***/ }),
 
@@ -19117,18 +18786,6 @@ var routes = [{
   path: '/',
   component: function component() {
     return Promise.resolve(/*! import() */).then(__webpack_require__.bind(null, /*! @components/todos/Index.vue */ "./resources/js/components/todos/Index.vue"));
-  }
-}, {
-  name: 'create',
-  path: '/create',
-  component: function component() {
-    return __webpack_require__.e(/*! import() | js/todos/create */ "js/todos/create").then(__webpack_require__.bind(null, /*! @components/todos/Create */ "./resources/js/components/todos/Create.vue"));
-  }
-}, {
-  name: 'update',
-  path: '/update/:id',
-  component: function component() {
-    return __webpack_require__.e(/*! import() | js/todos/update */ "js/todos/update").then(__webpack_require__.bind(null, /*! @components/todos/Update */ "./resources/js/components/todos/Update.vue"));
   }
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({

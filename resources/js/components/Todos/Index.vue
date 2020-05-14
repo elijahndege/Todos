@@ -1,110 +1,41 @@
+
+
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6">
-        <div v-if="!newTask.edit" class="card border-secondary">
-          <div class="card-header">Add Task</div>
-          <div class="card-body text-secondary">
-            <form @submit.prevent="taskStore">
-              <div class="form-group">
-                <label>Task</label>
+  <div class="page-content page-container" id="page-content">
+    <div class="padding">
+      <div class="row container d-flex justify-content-center">
+        <div class="col-lg-12">
+          <div class="card px-3">
+            <div class="card-body">
+              <h4 class="card-title">Todo list</h4>
+              <div class="add-items d-flex">
                 <input
+                  @keyup.enter="addTask"
+                  v-model="newTask"
                   type="text"
-                  class="form-control"
-                  v-model="newTask.task"
-                  placeholder="Add Task"
+                  class="form-control todo-list-input"
+                  placeholder="What do you need to do today?"
                 />
-                <div v-if="validation.task">
-                  <div class="alert alert-danger mt-1" role="alert">{{ validation.task[0] }}</div>
-                </div>
+                <button
+                  @click="addTask"
+                  :disabled="newTask.length === 0"
+                  class="add btn btn-primary font-weight-bold todo-list-add-btn"
+                >Add</button>
               </div>
-
-              <div class="form-group">
-                <label>Description</label>
-                <textarea
-                  class="form-control"
-                  v-model="newTask.description"
-                  rows="5"
-                  placeholder="Add task description"
-                ></textarea>
-                <div v-if="validation.description">
-                  <div class="alert alert-danger mt-1" role="alert">{{ validation.description[0] }}</div>
-                </div>
+              <div class="list-wrapper">
+                <ul class="d-flex flex-column-reverse todo-list">
+                  <li v-for="task in tasks" :key="task.id">
+                    <div class="form-check" :class="{completed: task.is_completed}">
+                      <label class="form-check-label">
+                        <input class="checkbox" type="checkbox" v-model="task.is_completed"/>
+                        {{task.task}}
+                        <i class="input-helper"></i>
+                      </label>
+                    </div>
+                    <i @click.prevent="destroy(task.id)" class="remove fa fa-trash"></i>
+                  </li>
+                </ul>
               </div>
-
-              <div class="form-group">
-                <button type="submit" class="btn btn-md btn-success">Submit</button>
-                <button type="reset" class="btn btn-md btn-danger">Reset</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div v-else class="card border-secondary">
-          <div class="card-header">Edit Task</div>
-          <div class="card-body text-secondary">
-            <form @submit.prevent="UpdateStore">
-              <div class="form-group">
-                <label>Task</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="newTask.task"
-                  placeholder="Add Task"
-                />
-                <div v-if="validation.task">
-                  <div class="alert alert-danger mt-1" role="alert">{{ validation.task[0] }}</div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Description</label>
-                <textarea
-                  class="form-control"
-                  v-model="newTask.description"
-                  rows="5"
-                  placeholder="Add task description"
-                ></textarea>
-                <div v-if="validation.description">
-                  <div class="alert alert-danger mt-1" role="alert">{{ validation.description[0] }}</div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <button type="submit" class="btn btn-md btn-success">Submit</button>
-                <button type="reset" class="btn btn-md btn-danger">Reset</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="card card-success">
-          <div class="card-header">Todos</div>
-
-          <div class="card-body">
-            <div class="table-responsive mt-2">
-              <table class="table table-hover table-bordered">
-                <thead>
-                  <tr>
-                    <th>Task</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="task in tasks" :key="task.id">
-                    <td>{{ task.task }}</td>
-                    <td>{{ task.description }}</td>
-                    <td class="text-center">
-                      <button
-                        @click.prevent="showEditForm(task)"
-                        class="btn btn-sm btn-primary"
-                      >Edit</button>
-                      <button @click.prevent="destroy(task.id)" class="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -122,11 +53,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      newTask: {
-        task:'',
-        description:'',
-        edit: false
-      },
+      newTask: "",
       tasks: [],
       validation: []
     };
@@ -144,21 +71,28 @@ export default {
       }
       this.isLoading = false;
     },
-    showEditForm(task) {
-      this.newTask.edit = true;
-     console.log(this.newTask.task);
-    },
+    // showEditForm(task) {
+    //   this.newTask.edit = true;
+    //   console.log(this.newTask.task);
+    // },
 
-    taskStore() {
-      let uri = "https://crud.test/api/todos/store";
-      this.axios
-        .post(uri, this.newTask)
-        .then(response => {
-          this.tasks.push(response.data.data);
-        })
-        .catch(error => {
-          this.validation = error.response.data.data;
-        });
+    addTask() {
+      if (this.newTask.length > 0) {
+        let task = {
+          task: this.newTask,
+          is_completed: true
+        };
+        let uri = "https://crud.test/api/todos/store";
+        this.axios
+          .post(uri, task)
+          .then(response => {
+            this.tasks.push(response.data.data);
+            this.newTask = "";
+          })
+          .catch(error => {
+            this.validation = error.response.data.data;
+          });
+      }
     },
     destroy(id) {
       let uri = `https://crud.test/api/todos/${id}`;
