@@ -8,16 +8,6 @@ const routes = [
         path: '/',
         component: () => import(/* webpackChunkName: "js/todos/index" */ '@components/todos/Index.vue')
     },
-    {
-        name: 'create',
-        path: '/create',
-        component: () => import(/* webpackChunkName: "js/todos/create" */ '@components/todos/Create')
-    },
-    {
-        name: 'update',
-        path: '/update/:id',
-        component: () => import(/* webpackChunkName: "js/todos/update" */ '@components/todos/Update')
-    }
 ];
 
 const router = new VueRouter({
