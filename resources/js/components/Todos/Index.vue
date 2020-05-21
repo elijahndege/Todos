@@ -67,7 +67,7 @@ export default {
     async fetchTodos() {
       try {
         this.tasks = (
-          await this.axios.get("https://crud.test/api/todos")
+          await this.axios.get("/api/todos")
         ).data.data;
         console.log(this.tasks);
       } catch (e) {
@@ -93,7 +93,7 @@ export default {
           task: this.newTask,
           is_completed: false
         };
-        let uri = "https://crud.test/api/todos/store";
+        let uri = "/api/todos/store";
         this.axios
           .post(uri, task)
           .then(response => {
@@ -106,7 +106,7 @@ export default {
       }
     },
     destroy(task) {
-      let uri = `https://crud.test/api/todos/${task.id}`;
+      let uri = `/api/todos/${task.id}`;
       this.axios
         .delete(uri)
         .then(response => {
