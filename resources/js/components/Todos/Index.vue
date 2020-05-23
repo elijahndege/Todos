@@ -24,19 +24,20 @@
               </div>
               <div class="list-wrapper">
                 <ul class="d-flex flex-column-reverse todo-list">
-                  <li v-for="(task, index) in tasks" :key="index">
-                    <div
-                      class="form-check"
-                      @click="updateTask(task)"
-                      :class="{completed: task.is_completed}"
-                    >
-                      <label class="form-check-label">
-                        <input class="checkbox" type="checkbox" v-model="task.is_completed" />
+                  <li v-for="(task, index) in tasks" :key="task.id">
+                    <div class="form-check" :class="{completed: task.is_completed}">
+                      <label  @change="updateTask(task)" class="form-check-label">
+                        <input
+                          class="checkbox"
+                          type="checkbox"
+                         
+                          v-model="task.is_completed"
+                        />
                         {{task.task}}
                         <i class="input-helper"></i>
                       </label>
                     </div>
-                    <i @click.prevent="destroy(task)" class="remove fa fa-trash"></i>
+                    <i @click="destroy(task, index)" class="remove fa fa-trash"></i>
                   </li>
                 </ul>
               </div>
@@ -57,7 +58,6 @@ export default {
   data() {
     return {
       isLoading: true,
-      isEditing: false,
       newTask: "",
       tasks: [],
       validation: []
@@ -66,9 +66,7 @@ export default {
   methods: {
     async fetchTodos() {
       try {
-        this.tasks = (
-          await this.axios.get("/api/todos")
-        ).data.data;
+        this.tasks = (await this.axios.get("/api/todos")).data.data;
         console.log(this.tasks);
       } catch (e) {
         console.log(e);
@@ -77,14 +75,13 @@ export default {
       this.isLoading = false;
     },
     updateTask(task) {
-      console.log(task);
-      task.is_completed = !task.is_completed;
+      console.log(task.is_completed);
       let uri = `/api/todos/update/${task.id}`;
 
       this.axios
         .patch(uri, { task: task.task, is_completed: task.is_completed })
         .then(response => {
-          this.tasks.splice(task.index, 1, response.data.data);
+          // this.tasks.splice(task.index, 1, response.data.data);
         });
     },
     addTask() {
@@ -105,12 +102,12 @@ export default {
           });
       }
     },
-    destroy(task) {
+    destroy(task, index) {
       let uri = `/api/todos/${task.id}`;
       this.axios
         .delete(uri)
         .then(response => {
-          this.tasks.splice(task.index, 1);
+          this.tasks.splice(index, 1);
           // this.tasks = this.tasks.filter(task => task.id !== id);
         })
         .catch(error => {
